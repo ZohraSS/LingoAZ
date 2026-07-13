@@ -1,0 +1,87 @@
+import { Word } from "@/types/word";
+
+export const businessWords: Word[] = [
+  {
+    id: 1001,
+    type: "word",
+    word: "Mortgage",
+    ipaUK: "/ˈmɔːɡɪdʒ/",
+    ipaUS: "/ˈmɔːrɡɪdʒ/",
+    az: "İpoteka",
+    ru: "Ипотека",
+    level: "B2",
+    synonyms: ["home loan"],
+    antonyms: [],
+    example: "They took out a mortgage to buy a house.",
+  },
+
+  {
+    id: 1002,
+    type: "phrase",
+    word: "Student loan",
+    ipaUK: "/ˈstjuːdənt ləʊn/",
+    ipaUS: "/ˈstuːdənt loʊn/",
+    az: "Tələbə krediti",
+    ru: "Студенческий кредит",
+    level: "B2",
+    synonyms: ["education loan"],
+    antonyms: [],
+    example: "She is still paying off her student loan.",
+  },
+
+  {
+    id: 1003,
+    type: "phrase",
+    word: "Credit card",
+    ipaUK: "/ˈkredɪt kɑːd/",
+    ipaUS: "/ˈkredɪt kɑːrd/",
+    az: "Kredit kartı",
+    ru: "Кредитная карта",
+    level: "B1",
+    synonyms: [],
+    antonyms: [],
+    example: "I paid with my credit card.",
+  },
+
+  {
+    id: 1004,
+    type: "phrase",
+    word: "Bank loan",
+    ipaUK: "/bæŋk ləʊn/",
+    ipaUS: "/bæŋk loʊn/",
+    az: "Bank krediti",
+    ru: "Банковский кредит",
+    level: "B1",
+    synonyms: ["loan"],
+    antonyms: [],
+    example: "The company applied for a bank loan.",
+  },
+
+  {
+    id: 1005,
+    type: "word",
+    word: "Crowdfunding",
+    ipaUK: "/ˈkraʊdfʌndɪŋ/",
+    ipaUS: "/ˈkraʊdfʌndɪŋ/",
+    az: "Kütləvi maliyyələşdirmə",
+    ru: "Краудфандинг",
+    level: "C1",
+    synonyms: [],
+    antonyms: [],
+    example: "The startup raised money through crowdfunding.",
+  },
+
+  {
+    id: 1006,
+    type: "word",
+    word: "Cash",
+    ipaUK: "/kæʃ/",
+    ipaUS: "/kæʃ/",
+    az: "Nağd pul",
+    ru: "Наличные",
+    level: "A2",
+    synonyms: ["money"],
+    antonyms: [],
+    example: "I only have cash today.",
+  }
+];
