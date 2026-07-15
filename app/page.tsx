@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 
-import { words } from "@/data/words";
+import { words } from "@/data";
 import SearchBar from "@/components/SearchBar";
 import WordCard from "@/components/WordCard";
 
