@@ -1,53 +1,124 @@
-"use client";
-
-import { useMemo, useState } from "react";
-
+import Link from "next/link";
 import { words } from "@/data";
-import SearchBar from "@/components/SearchBar";
-import WordCard from "@/components/WordCard";
+import { categories } from "@/data/categories";
+import { vocabularyTypes } from "@/data/types";
 
+const levels = ["A1", "A2", "B1", "B2", "C1", "C2"] as const;
 
-export default function Home() {
-  const [query, setQuery] = useState("");
-
-  const filteredWords = useMemo(() => {
-    return words.filter(
-      (item) =>
-        item.word.toLowerCase().includes(query.toLowerCase()) ||
-        item.az.toLowerCase().includes(query.toLowerCase()) ||
-        item.ru.toLowerCase().includes(query.toLowerCase())
-    );
-  }, [query]);
-
+export default function HomePage() {
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
-      <section className="mx-auto max-w-6xl px-6 py-12">
-        <h1 className="text-center text-6xl font-black text-blue-500">
-          🌍 LingoAZ
-        </h1>
+    <main className="mx-auto max-w-7xl px-6 py-10">
+      {/* Hero */}
+      <section className="mb-10">
+        <h1 className="text-4xl font-bold">🌍 LingoAZ</h1>
 
-        <p className="mt-4 text-center text-slate-400 text-xl">
-          Learn Languages Freely
+        <p className="mt-2 text-gray-500">
+          Learn English Smarter
         </p>
 
-        <div className="mx-auto mt-10 max-w-2xl">
-          <SearchBar value={query} onChange={setQuery} />
+        <input
+          placeholder="🔍 Search words..."
+          className="mt-6 w-full rounded-xl border border-gray-300 px-4 py-3 outline-none focus:border-blue-500"
+        />
+      </section>
+
+      {/* Levels */}
+      <section className="mb-12">
+        <h2 className="mb-5 text-2xl font-semibold">
+          📚 Browse by Level
+        </h2>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {levels.map((level) => {
+            const count = words.filter(
+              (word) => word.level === level
+            ).length;
+
+            return (
+              <Link
+                key={level}
+                href={`/level/${level}`}
+                className="rounded-2xl border p-6 transition hover:shadow-lg"
+              >
+                <h3 className="text-2xl font-bold">{level}</h3>
+
+                <p className="mt-2 text-gray-500">
+                  {count} Words
+                </p>
+
+                <span className="mt-6 inline-block font-medium text-blue-600">
+                  Open →
+                </span>
+              </Link>
+            );
+          })}
         </div>
+      </section>
 
-        <div className="mt-12 grid gap-6 md:grid-cols-2">
-          {filteredWords.length > 0 ? (
-            filteredWords.map((word) => (
-              <WordCard key={word.id} word={word} />
-            ))
-          ) : (
-            <div className="col-span-full rounded-2xl border border-slate-800 bg-slate-900 p-10 text-center">
-              <h2 className="text-2xl font-bold">No words found 😢</h2>
+      {/* Categories */}
+      <section className="mb-12">
+        <h2 className="mb-5 text-2xl font-semibold">
+          📂 Browse by Category
+        </h2>
 
-              <p className="mt-3 text-slate-400">
-                Try another search.
-              </p>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {categories.map((category) => (
+            <div
+              key={category.id}
+              className="rounded-2xl border p-5"
+            >
+              <div className="text-3xl">{category.icon}</div>
+
+              <h3 className="mt-3 font-semibold">
+                {category.name}
+              </h3>
             </div>
-          )}
+          ))}
+        </div>
+      </section>
+
+      {/* Types */}
+      <section className="mb-12">
+        <h2 className="mb-5 text-2xl font-semibold">
+          📝 Vocabulary Types
+        </h2>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {vocabularyTypes.map((type) => (
+            <div
+              key={type.id}
+              className="rounded-2xl border p-5"
+            >
+              <div className="text-3xl">{type.icon}</div>
+
+              <h3 className="mt-3 font-semibold">
+                {type.name}
+              </h3>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Explore */}
+      <section>
+        <h2 className="mb-5 text-2xl font-semibold">
+          📖 Explore
+        </h2>
+
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            "🔥 Most Popular",
+            "⭐ Recently Added",
+            "🎲 Random Word",
+            "❤️ Favorites",
+          ].map((item) => (
+            <div
+              key={item}
+              className="rounded-2xl border p-5"
+            >
+              <h3 className="font-semibold">{item}</h3>
+            </div>
+          ))}
         </div>
       </section>
     </main>

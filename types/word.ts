@@ -1,23 +1,50 @@
-export type WordType = "word" | "phrase" | "expression";
+export type Level = "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
+
+export type WordType =
+  | "word"
+  | "phrase"
+  | "expression"
+  | "phrasal-verb"
+  | "idiom";
+
+export type Category =
+  | "business"
+  | "travel"
+  | "health"
+  | "education"
+  | "technology"
+  | "music"
+  | "daily-life";
+
+export interface Example {
+  en: string;
+  az: string;
+  ru: string;
+}
 
 export interface Word {
   id: number;
-  type: WordType;
 
   word: string;
+  type: WordType;
+  category: Category;
+  level: Level;
 
   ipaUK: string;
   ipaUS: string;
 
-  level: "A1" | "A2" | "B1" | "B2" | "C1" | "C2";
-
-  definition?: string;
+  definition: string;
 
   az: string;
   ru: string;
 
   synonyms: string[];
   antonyms: string[];
+  relatedWords: string[];
 
-  example?: string;
+  examples: Example[];
+
+  isPopular?: boolean;
+  createdAt?: string;
+  audio?: string;
 }
