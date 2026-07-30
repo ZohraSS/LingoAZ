@@ -32,7 +32,11 @@ export default function WordCard({ word }: Props) {
         </p>
 
         <p>
-          <strong>Example:</strong> {word.example}
+          {word.examples?.[0] && (
+  <p className="mt-3 text-sm text-slate-500">
+    <strong>Example:</strong> {word.examples[0].en}
+  </p>
+)}
         </p>
       </div>
     </div>

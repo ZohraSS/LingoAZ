@@ -26,23 +26,29 @@ export interface Word {
   id: number;
 
   word: string;
+
   type: WordType;
-  category: Category;
+
   level: Level;
+
+  category?: Category;
 
   ipaUK: string;
   ipaUS: string;
 
-  definition: string;
+  definition?: string;
 
   az: string;
   ru: string;
 
-  synonyms: string[];
-  antonyms: string[];
-  relatedWords: string[];
+  synonyms?: string[];
+  antonyms?: string[];
 
-  examples: Example[];
+  relatedWords?: string[];
+
+  examples?: Example[];
+
+  example?: string;
 
   isPopular?: boolean;
   createdAt?: string;

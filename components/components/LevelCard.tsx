@@ -1,6 +1,4 @@
 import Link from "next/link";
-import LevelCard from "@/components/LevelCard";
-
 interface Props {
   level: string;
   count: number;
