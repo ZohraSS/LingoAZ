@@ -1,126 +1,222 @@
+"use client";
+
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import ThemeToggle from "@/components/ThemeToggle";
 import { words } from "@/data";
+import { categories } from "@/data/categories";
+import { vocabularyTypes } from "@/data/types";
 
-type Props = {
-  params: Promise<{
-    id: string;
-  }>;
-};
+const levels = [
+  {
+    level: "A1",
+    name: "Beginner",
+    color: "bg-green-500",
+  },
+  {
+    level: "A2",
+    name: "Elementary",
+    color: "bg-lime-500",
+  },
+  {
+    level: "B1",
+    name: "Intermediate",
+    color: "bg-blue-500",
+  },
+  {
+    level: "B2",
+    name: "Upper Intermediate",
+    color: "bg-orange-500",
+  },
+  {
+    level: "C1",
+    name: "Advanced",
+    color: "bg-red-500",
+  },
+  {
+    level: "C2",
+    name: "Proficient",
+    color: "bg-purple-600",
+  },
+];
 
-export default async function WordPage({ params }: Props) {
-  const { id } = await params;
-
-  const word = words.find((w) => w.id === Number(id));
-
-  if (!word) {
-    notFound();
-  }
-
+export default function HomePage() {
   return (
-    <main className="mx-auto max-w-4xl px-6 py-10">
-      <Link
-        href={`/level/${word.level}`}
-        className="text-emerald-600 hover:underline"
-      >
-        ← Back
-      </Link>
+    <main className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-white">
+      <section className="mx-auto max-w-7xl px-6 py-12">
 
-      <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        {/* Header */}
+
         <div className="flex items-center justify-between">
-          <h1 className="text-4xl font-bold">{word.word}</h1>
 
-          <span className="rounded-full bg-emerald-100 px-4 py-2 text-sm font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
-            {word.level}
-          </span>
+          <div>
+            <h1 className="text-5xl font-black">
+              🌍 LingoAZ
+            </h1>
+
+            <p className="mt-3 text-slate-500 dark:text-slate-400">
+              Learn English Smarter
+            </p>
+          </div>
+
+          <ThemeToggle />
+
         </div>
 
-        <p className="mt-2 text-slate-500">
-          {word.type?.toUpperCase()}
-        </p>
+        {/* Search */}
 
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
-          <div>
-            <h3 className="font-semibold">🇬🇧 IPA (UK)</h3>
-            <p>{word.ipaUK || "-"}</p>
-          </div>
+        <input
+          placeholder="🔍 Search words..."
+          className="mt-8 w-full rounded-2xl border border-slate-300 bg-white px-5 py-4 shadow-sm outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900"
+        />
 
-          <div>
-            <h3 className="font-semibold">🇺🇸 IPA (US)</h3>
-            <p>{word.ipaUS || "-"}</p>
-          </div>
-        </div>
+        {/* Levels */}
 
-        {word.definition && (
-          <div className="mt-8">
-            <h3 className="font-semibold">Definition</h3>
-            <p className="mt-2">{word.definition}</p>
-          </div>
-        )}
+        <section className="mt-14">
 
-        <div className="mt-8 grid gap-6 md:grid-cols-2">
-          <div>
-            <h3 className="font-semibold">🇦🇿 Azerbaijani</h3>
-            <p>{word.az || "-"}</p>
-          </div>
+          <h2 className="mb-6 text-3xl font-bold">
+            📚 Browse by Level
+          </h2>
 
-          <div>
-            <h3 className="font-semibold">🇷🇺 Russian</h3>
-            <p>{word.ru || "-"}</p>
-          </div>
-        </div>
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
 
-        {(word.synonyms?.length ?? 0) > 0 && (
-          <div className="mt-8">
-            <h3 className="font-semibold">Synonyms</h3>
+            {levels.map((item) => {
 
-            <div className="mt-2 flex flex-wrap gap-2">
-              {word.synonyms!.map((item) => (
-                <span
-                  key={item}
-                  className="rounded-full bg-slate-100 px-3 py-1 text-sm dark:bg-slate-800"
+              const count = words.filter(
+                (w) => w.level === item.level
+              ).length;
+
+              return (
+                <Link
+                  key={item.level}
+                  href={`/level/${item.level}`}
+                  className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900"
                 >
-                  {item}
-                </span>
-              ))}
-            </div>
+
+                  <span
+                    className={`${item.color} rounded-full px-3 py-1 text-sm font-bold text-white`}
+                  >
+                    {item.level}
+                  </span>
+
+                  <h3 className="mt-5 text-2xl font-bold">
+                    {item.name}
+                  </h3>
+
+                  <p className="mt-2 text-slate-500">
+                    {count} Words
+                  </p>
+
+                  <p className="mt-8 font-semibold text-emerald-600">
+                    Open →
+                  </p>
+
+                </Link>
+              );
+            })}
+
           </div>
-        )}
 
-        {(word.antonyms?.length ?? 0) > 0 && (
-          <div className="mt-8">
-            <h3 className="font-semibold">Antonyms</h3>
+        </section>
 
-            <div className="mt-2 flex flex-wrap gap-2">
-              {word.antonyms!.map((item) => (
-                <span
-                  key={item}
-                  className="rounded-full bg-slate-100 px-3 py-1 text-sm dark:bg-slate-800"
-                >
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-        )}
+        {/* Categories */}
 
-        {(word.examples?.length ?? 0) > 0 && (
-          <div className="mt-8">
-            <h3 className="font-semibold">Examples</h3>
+        <section className="mt-16">
 
-            {word.examples!.map((example, index) => (
+          <h2 className="mb-6 text-3xl font-bold">
+            📂 Browse by Category
+          </h2>
+
+          <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-4">
+
+            {categories.map((category) => (
+
               <div
-                key={index}
-                className="mt-4 rounded-xl bg-slate-50 p-4 dark:bg-slate-800"
+                key={category.id}
+                className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
               >
-                <p>🇬🇧 {example.en}</p>
-                <p>🇦🇿 {example.az}</p>
-                <p>🇷🇺 {example.ru}</p>
+
+                <div className="text-4xl">
+                  {category.icon}
+                </div>
+
+                <h3 className="mt-4 font-semibold">
+                  {category.name}
+                </h3>
+
               </div>
+
             ))}
+
           </div>
-        )}
-      </div>
+
+        </section>
+
+        {/* Types */}
+
+        <section className="mt-16">
+
+          <h2 className="mb-6 text-3xl font-bold">
+            📝 Vocabulary Types
+          </h2>
+
+          <div className="grid gap-4 md:grid-cols-3 xl:grid-cols-5">
+
+            {vocabularyTypes.map((type) => (
+
+              <div
+                key={type.id}
+                className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
+              >
+
+                <div className="text-4xl">
+                  {type.icon}
+                </div>
+
+                <h3 className="mt-4 font-semibold">
+                  {type.name}
+                </h3>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </section>
+
+        {/* Explore */}
+
+        <section className="mt-16 mb-20">
+
+          <h2 className="mb-6 text-3xl font-bold">
+            📖 Explore
+          </h2>
+
+          <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+
+            {[
+              "❤️ Favorites",
+              "🎲 Random Word",
+              "⭐ Recently Added",
+              "🔥 Most Popular",
+            ].map((item) => (
+
+              <div
+                key={item}
+                className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-lg dark:border-slate-800 dark:bg-slate-900"
+              >
+                <h3 className="font-semibold">
+                  {item}
+                </h3>
+              </div>
+
+            ))}
+
+          </div>
+
+        </section>
+
+      </section>
     </main>
   );
 }
