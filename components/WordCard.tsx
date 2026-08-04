@@ -31,13 +31,11 @@ export default function WordCard({ word }: Props) {
           <strong>🇷🇺</strong> {word.ru}
         </p>
 
-        <p>
-          {word.examples?.[0] && (
-  <p className="mt-3 text-sm text-slate-500">
-    <strong>Example:</strong> {word.examples[0].en}
-  </p>
-)}
-        </p>
+        {word.examples?.[0] && (
+          <p className="text-sm text-slate-500">
+            <strong>Example:</strong> {word.examples[0].en}
+          </p>
+        )}
       </div>
     </div>
   );
