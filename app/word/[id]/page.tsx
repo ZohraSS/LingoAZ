@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import ThemeToggle from "@/components/ThemeToggle";
 import { words } from "@/data";
 import { categories } from "@/data/categories";
 import { vocabularyTypes } from "@/data/types";
@@ -58,7 +57,6 @@ export default function HomePage() {
             </p>
           </div>
 
-          <ThemeToggle />
 
         </div>
 
