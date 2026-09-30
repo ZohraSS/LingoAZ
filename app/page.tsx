@@ -3,164 +3,138 @@ import { words } from "@/data";
 import { categories } from "@/data/categories";
 import { vocabularyTypes } from "@/data/types";
 
-const levels = ["A1", "A2", "B1", "B2", "C1", "C2"] as const;
+const levels = [
+  "A1",
+  "A2",
+  "B1",
+  "B2",
+  "C1",
+  "C2",
+] as const;
 
-const categoryInfo: Record<
-  string,
-  {
-    description: string;
-    keywords: string[];
-  }
-> = {
-  business: {
-    description: "Work, career, finance and professional English.",
-    keywords: [
-      "business",
-      "company",
-      "career",
-      "job",
-      "salary",
-      "manager",
-      "employee",
-      "office",
-      "market",
-      "project",
-    ],
-  },
+const categoryKeywords: Record<string, string[]> = {
+  business: [
+    "business", "company", "office", "job", "work", "career",
+    "manager", "management", "employee", "employer", "meeting",
+    "project", "market", "customer", "client", "sales", "finance",
+    "salary", "promotion", "leadership", "deadline", "contract",
+    "deal", "profit", "boss", "professional",
+  ],
 
-  travel: {
-    description: "Useful vocabulary for trips, transport and holidays.",
-    keywords: [
-      "travel",
-      "trip",
-      "flight",
-      "airport",
-      "hotel",
-      "tour",
-      "journey",
-      "holiday",
-      "ticket",
-      "passport",
-    ],
-  },
+  travel: [
+    "travel", "trip", "journey", "flight", "airport", "airline",
+    "airplane", "hotel", "hostel", "reservation", "booking",
+    "passport", "visa", "luggage", "baggage", "ticket", "train",
+    "bus", "taxi", "tour", "tourist", "tourism", "destination",
+    "vacation", "holiday", "beach", "map", "guide", "departure",
+    "arrival", "station", "road", "transport", "suitcase",
+  ],
 
-  health: {
-    description: "Health, body, medicine and everyday wellness vocabulary.",
-    keywords: [
-      "health",
-      "healthy",
-      "doctor",
-      "medicine",
-      "hospital",
-      "body",
-      "pain",
-      "medical",
-      "exercise",
-      "treatment",
-    ],
-  },
+  health: [
+    "health", "healthy", "doctor", "hospital", "medicine", "medical",
+    "patient", "disease", "illness", "pain", "treatment", "symptom",
+    "body", "exercise", "fitness", "diet", "food", "sleep", "stress",
+    "mental", "blood", "heart", "skin", "injury", "emergency",
+    "clinic", "nurse", "vitamin",
+  ],
 
-  education: {
-    description: "School, university, learning and academic vocabulary.",
-    keywords: [
-      "education",
-      "school",
-      "student",
-      "teacher",
-      "study",
-      "university",
-      "college",
-      "lesson",
-      "course",
-      "academic",
-    ],
-  },
+  education: [
+    "education", "school", "university", "college", "student",
+    "teacher", "lesson", "class", "course", "study", "learn",
+    "learning", "exam", "test", "homework", "subject", "degree",
+    "knowledge", "research", "academic", "library", "book",
+    "lecture", "training", "skill", "professor", "education",
+  ],
 
-  technology: {
-    description: "Technology, computers, internet and digital vocabulary.",
-    keywords: [
-      "technology",
-      "computer",
-      "internet",
-      "software",
-      "digital",
-      "data",
-      "system",
-      "website",
-      "application",
-      "online",
-    ],
-  },
+  technology: [
+    "technology", "computer", "software", "hardware", "internet",
+    "website", "application", "app", "data", "database", "system",
+    "network", "security", "cyber", "digital", "online", "device",
+    "phone", "mobile", "code", "developer", "programming", "cloud",
+    "server", "artificial", "intelligence", "account", "password",
+    "email",
+  ],
 
-  music: {
-    description: "Music, songs, artists and entertainment vocabulary.",
-    keywords: [
-      "music",
-      "song",
-      "sing",
-      "singer",
-      "melody",
-      "sound",
-      "band",
-      "concert",
-      "album",
-      "dance",
-    ],
-  },
+  music: [
+    "music", "song", "singer", "artist", "band", "album", "concert",
+    "performance", "instrument", "guitar", "piano", "drum", "voice",
+    "sound", "dance", "rhythm", "melody", "record", "radio", "stage",
+    "musician", "lyrics", "playlist", "track",
+  ],
 
-  "daily-life": {
-    description: "Common vocabulary for everyday life and communication.",
-    keywords: [
-      "home",
-      "family",
-      "food",
-      "house",
-      "morning",
-      "daily",
-      "friend",
-      "people",
-      "life",
-      "buy",
-    ],
-  },
+  "daily-life": [
+    "home", "house", "family", "friend", "food", "drink", "shopping",
+    "clothes", "morning", "evening", "day", "night", "life", "time",
+    "people", "city", "street", "car", "money", "phone", "message",
+    "call", "weather", "weekend", "restaurant", "market", "daily",
+  ],
 };
 
-function getCategoryData(categoryId: string) {
-  const info = categoryInfo[categoryId];
+function getCategoryWords(categoryId: string) {
+  const keywords = categoryKeywords[categoryId] ?? [];
 
-  if (!info) {
-    return {
-      count: 0,
-      examples: [],
-      description: "Explore useful English vocabulary.",
-    };
-  }
+  const exact = words.filter(
+    (word) => word.category === categoryId
+  );
 
-  const matched = words.filter((word) => {
+  const matches = words.filter((word) => {
     const text = [
       word.word,
+      word.definition ?? "",
       word.az,
       word.ru,
-      word.definition ?? "",
-      word.example ?? "",
-      ...word.synonyms,
+      ...(word.relatedWords ?? []),
+      ...(word.synonyms ?? []),
     ]
       .join(" ")
       .toLowerCase();
 
-    return info.keywords.some((keyword) =>
-      text.includes(keyword.toLowerCase())
-    );
+    return keywords.some((keyword) => text.includes(keyword));
   });
 
-  return {
-    count: matched.length,
-    examples: matched.slice(0, 3).map((word) => word.word),
-    description: info.description,
-  };
+  const unique = new Map<number, (typeof words)[number]>();
+
+  [...exact, ...matches].forEach((word) => {
+    unique.set(word.id, word);
+  });
+
+  return Array.from(unique.values()).slice(0, 100);
+}
+
+function getTypeWords(typeId: string) {
+  return words
+    .filter((word) => word.type === typeId)
+    .slice(0, 100);
+}
+
+function getPopularWords() {
+  const popular = words.filter((word) => word.isPopular);
+
+  if (popular.length > 0) {
+    return popular.slice(0, 4);
+  }
+
+  return words.slice(0, 4);
+}
+
+function getRecentWords() {
+  const withDates = words.filter((word) => word.createdAt);
+
+  if (withDates.length > 0) {
+    return [...withDates]
+      .sort((a, b) =>
+        (b.createdAt ?? "").localeCompare(a.createdAt ?? "")
+      )
+      .slice(0, 4);
+  }
+
+  return [...words].reverse().slice(0, 4);
 }
 
 export default function HomePage() {
+  const popularWords = getPopularWords();
+  const recentWords = getRecentWords();
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-gradient-to-br from-sky-50 via-white to-indigo-100 text-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:text-white">
 
@@ -194,7 +168,7 @@ export default function HomePage() {
             </div>
           </Link>
 
-          {/* STATISTICS */}
+          {/* Statistics */}
           <div className="mt-12 grid grid-cols-2 gap-5 md:grid-cols-4">
 
             <div className="rounded-3xl border border-white/40 bg-white/60 p-6 shadow-lg backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/70">
@@ -259,7 +233,6 @@ export default function HomePage() {
                 >
 
                   <div className="flex items-center justify-between">
-
                     <h3 className="text-3xl font-bold">
                       {level}
                     </h3>
@@ -267,7 +240,6 @@ export default function HomePage() {
                     <span className="rounded-full bg-emerald-500 px-4 py-1 text-sm font-bold text-white">
                       {count}
                     </span>
-
                   </div>
 
                   <p className="mt-3 text-slate-500 dark:text-slate-400">
@@ -296,51 +268,49 @@ export default function HomePage() {
 
             {categories.map((category) => {
 
-              const data = getCategoryData(category.id);
+              const categoryWords = getCategoryWords(category.id);
 
               return (
                 <Link
                   key={category.id}
                   href={`/category/${category.id}`}
-                  className="group rounded-3xl border border-white/40 bg-white/70 p-6 shadow-lg backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:border-emerald-400 hover:shadow-2xl dark:border-slate-800 dark:bg-slate-900/70"
+                  className="group rounded-3xl border border-white/40 bg-white/70 p-6 shadow-lg backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl dark:border-slate-800 dark:bg-slate-900/70"
                 >
 
-                  <div className="text-5xl transition-transform duration-300 group-hover:scale-110">
-                    {category.icon}
+                  <div className="flex items-start justify-between">
+                    <div className="text-5xl">
+                      {category.icon}
+                    </div>
+
+                    <span className="rounded-full bg-emerald-500 px-3 py-1 text-xs font-bold text-white">
+                      {categoryWords.length}
+                    </span>
                   </div>
 
                   <h3 className="mt-4 text-xl font-bold">
                     {category.name}
                   </h3>
 
-                  <p className="mt-3 min-h-[48px] text-sm leading-6 text-slate-500 dark:text-slate-400">
-                    {data.description}
-                  </p>
+                  <div className="mt-4 space-y-2">
+                    {categoryWords.slice(0, 4).map((word) => (
+                      <div
+                        key={word.id}
+                        className="flex items-center justify-between rounded-xl bg-slate-100/70 px-3 py-2 text-sm dark:bg-slate-800/60"
+                      >
+                        <span className="font-medium">
+                          {word.word}
+                        </span>
 
-                  <div className="mt-5 flex items-center justify-between">
-
-                    <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-                      {data.count} vocabulary items
-                    </span>
-
-                    <span className="text-lg text-slate-400 transition-transform group-hover:translate-x-1">
-                      →
-                    </span>
-
+                        <span className="text-xs text-slate-500 dark:text-slate-400">
+                          {word.level}
+                        </span>
+                      </div>
+                    ))}
                   </div>
 
-                  {data.examples.length > 0 && (
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {data.examples.map((example) => (
-                        <span
-                          key={example}
-                          className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300"
-                        >
-                          {example}
-                        </span>
-                      ))}
-                    </div>
-                  )}
+                  <div className="mt-5 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
+                    Explore up to 100 words →
+                  </div>
 
                 </Link>
               );
@@ -360,49 +330,42 @@ export default function HomePage() {
 
             {vocabularyTypes.map((type) => {
 
-              const count = words.filter(
-                (word) => word.type === type.id
-              ).length;
-
-              const descriptions: Record<string, string> = {
-                word: "Individual English words with pronunciation and translations.",
-                phrase: "Useful groups of words for natural everyday communication.",
-                expression: "Common expressions used by native English speakers.",
-                "phrasal-verb":
-                  "Verb combinations with particles that create new meanings.",
-                idiom: "Fixed expressions whose meaning is different from the literal words.",
-              };
+              const typeWords = getTypeWords(type.id);
 
               return (
                 <Link
                   key={type.id}
                   href={`/search?type=${encodeURIComponent(type.id)}`}
-                  className="group rounded-3xl border border-white/40 bg-white/70 p-6 shadow-lg backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:border-emerald-400 hover:shadow-2xl dark:border-slate-800 dark:bg-slate-900/70"
+                  className="group rounded-3xl border border-white/40 bg-white/70 p-6 shadow-lg backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl dark:border-slate-800 dark:bg-slate-900/70"
                 >
 
-                  <div className="text-5xl transition-transform duration-300 group-hover:scale-110">
-                    {type.icon}
+                  <div className="flex items-start justify-between">
+                    <div className="text-5xl">
+                      {type.icon}
+                    </div>
+
+                    <span className="rounded-full bg-blue-500 px-3 py-1 text-xs font-bold text-white">
+                      {typeWords.length}
+                    </span>
                   </div>
 
-                  <h3 className="mt-5 text-xl font-bold">
+                  <h3 className="mt-4 text-xl font-bold">
                     {type.name}
                   </h3>
 
-                  <p className="mt-3 min-h-[60px] text-sm leading-6 text-slate-500 dark:text-slate-400">
-                    {descriptions[type.id] ??
-                      "Explore this vocabulary type."}
-                  </p>
+                  <div className="mt-4 space-y-2">
+                    {typeWords.slice(0, 3).map((word) => (
+                      <div
+                        key={word.id}
+                        className="rounded-xl bg-slate-100/70 px-3 py-2 text-sm dark:bg-slate-800/60"
+                      >
+                        {word.word}
+                      </div>
+                    ))}
+                  </div>
 
-                  <div className="mt-5 flex items-center justify-between">
-
-                    <span className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">
-                      {count} items
-                    </span>
-
-                    <span className="text-lg text-slate-400 transition-transform group-hover:translate-x-1">
-                      →
-                    </span>
-
+                  <div className="mt-5 text-sm font-semibold text-blue-600 dark:text-blue-400">
+                    Explore →
                   </div>
 
                 </Link>
@@ -419,69 +382,88 @@ export default function HomePage() {
             📖 Explore
           </h2>
 
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid gap-5 md:grid-cols-2">
 
+            {/* MOST POPULAR */}
             <Link
-              href="/favorites"
-              className="group rounded-3xl border border-white/40 bg-white/70 p-6 shadow-lg backdrop-blur-xl transition hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900/70"
+              href="/search?popular=true"
+              className="rounded-3xl border border-white/40 bg-white/70 p-6 shadow-lg backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl dark:border-slate-800 dark:bg-slate-900/70"
             >
-              <h3 className="text-lg font-semibold">
-                ❤️ Favorites
-              </h3>
+
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold">
+                  🔥 Most Popular
+                </h3>
+
+                <span className="text-sm text-emerald-500">
+                  View all →
+                </span>
+              </div>
+
               <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                Save words you want to learn.
+                Explore popular vocabulary
               </p>
-              <span className="mt-5 inline-block text-sm font-semibold text-emerald-600">
-                Open Favorites →
-              </span>
+
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                {popularWords.map((word) => (
+                  <div
+                    key={word.id}
+                    className="rounded-xl bg-slate-100/70 px-3 py-3 dark:bg-slate-800/60"
+                  >
+                    <div className="font-semibold">
+                      {word.word}
+                    </div>
+
+                    <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                      {word.az}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
             </Link>
 
+            {/* RECENTLY ADDED */}
             <Link
-              href="/random"
-              className="group rounded-3xl border border-white/40 bg-white/70 p-6 shadow-lg backdrop-blur-xl transition hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900/70"
+              href="/search?recent=true"
+              className="rounded-3xl border border-white/40 bg-white/70 p-6 shadow-lg backdrop-blur-xl transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl dark:border-slate-800 dark:bg-slate-900/70"
             >
-              <h3 className="text-lg font-semibold">
-                🎲 Random Word
-              </h3>
-              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                Discover a random vocabulary item.
-              </p>
-              <span className="mt-5 inline-block text-sm font-semibold text-emerald-600">
-                Try Random →
-              </span>
-            </Link>
 
-            <Link
-              href="/search"
-              className="group rounded-3xl border border-white/40 bg-white/70 p-6 shadow-lg backdrop-blur-xl transition hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900/70"
-            >
-              <h3 className="text-lg font-semibold">
-                🔥 Most Popular
-              </h3>
-              <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                Explore frequently used vocabulary.
-              </p>
-              <span className="mt-5 inline-block text-sm font-semibold text-emerald-600">
-                Explore →
-              </span>
-            </Link>
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold">
+                  ⭐ Recently Added
+                </h3>
 
-            <Link
-              href="/search"
-              className="group rounded-3xl border border-white/40 bg-white/70 p-6 shadow-lg backdrop-blur-xl transition hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900/70"
-            >
-              <h3 className="text-lg font-semibold">
-                ⭐ Recently Added
-              </h3>
+                <span className="text-sm text-blue-500">
+                  View all →
+                </span>
+              </div>
+
               <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-                Discover the latest vocabulary.
+                Explore new vocabulary
               </p>
-              <span className="mt-5 inline-block text-sm font-semibold text-emerald-600">
-                Explore →
-              </span>
+
+              <div className="mt-5 grid grid-cols-2 gap-3">
+                {recentWords.map((word) => (
+                  <div
+                    key={word.id}
+                    className="rounded-xl bg-slate-100/70 px-3 py-3 dark:bg-slate-800/60"
+                  >
+                    <div className="font-semibold">
+                      {word.word}
+                    </div>
+
+                    <div className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                      {word.az}
+                    </div>
+                  </div>
+                ))}
+              </div>
+
             </Link>
 
           </div>
+
         </section>
 
       </div>
