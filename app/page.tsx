@@ -2,6 +2,7 @@ import Link from "next/link";
 import { words } from "@/data";
 import { categories } from "@/data/categories";
 import { vocabularyTypes } from "@/data/types";
+import HomeSearch from "@/components/HomeSearch";
 
 const levels = [
   "A1",
@@ -39,14 +40,8 @@ export default function HomePage() {
             translations and real examples.
           </p>
 
-          <Link
-            href="/search"
-            className="mx-auto mt-10 block w-full max-w-3xl"
-          >
-            <div className="rounded-2xl border border-white/40 bg-white/70 px-6 py-5 text-left text-lg text-slate-500 shadow-xl backdrop-blur-xl transition hover:border-emerald-500 dark:border-slate-700 dark:bg-slate-900/70 dark:text-slate-400">
-              🔍 Search any word...
-            </div>
-          </Link>
+          {/* LIVE SEARCH */}
+          <HomeSearch />
 
           {/* Statistics */}
           <div className="mt-12 grid grid-cols-2 gap-5 md:grid-cols-4">
@@ -55,6 +50,7 @@ export default function HomePage() {
               <h3 className="text-4xl font-black text-emerald-600">
                 {words.length.toLocaleString()}
               </h3>
+
               <p className="mt-2 text-slate-500 dark:text-slate-400">
                 📚 Words
               </p>
@@ -64,6 +60,7 @@ export default function HomePage() {
               <h3 className="text-4xl font-black text-blue-600">
                 {levels.length}
               </h3>
+
               <p className="mt-2 text-slate-500 dark:text-slate-400">
                 🎯 Levels
               </p>
@@ -73,6 +70,7 @@ export default function HomePage() {
               <h3 className="text-4xl font-black text-purple-600">
                 {categories.length}
               </h3>
+
               <p className="mt-2 text-slate-500 dark:text-slate-400">
                 📂 Categories
               </p>
@@ -82,6 +80,7 @@ export default function HomePage() {
               <h3 className="text-4xl font-black text-orange-500">
                 {vocabularyTypes.length}
               </h3>
+
               <p className="mt-2 text-slate-500 dark:text-slate-400">
                 📝 Types
               </p>
@@ -113,6 +112,7 @@ export default function HomePage() {
                 >
 
                   <div className="flex items-center justify-between">
+
                     <h3 className="text-3xl font-bold">
                       {level}
                     </h3>
@@ -120,6 +120,7 @@ export default function HomePage() {
                     <span className="rounded-full bg-emerald-500 px-4 py-1 text-sm font-bold text-white">
                       {count}
                     </span>
+
                   </div>
 
                   <p className="mt-3 text-slate-500 dark:text-slate-400">
@@ -217,6 +218,7 @@ export default function HomePage() {
               <h3 className="text-lg font-semibold">
                 ❤️ Favorites
               </h3>
+
               <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                 Your saved words
               </p>
@@ -229,6 +231,7 @@ export default function HomePage() {
               <h3 className="text-lg font-semibold">
                 🎲 Random Word
               </h3>
+
               <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                 Discover a random word
               </p>
@@ -241,6 +244,7 @@ export default function HomePage() {
               <h3 className="text-lg font-semibold">
                 🔥 Most Popular
               </h3>
+
               <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                 Explore popular vocabulary
               </p>
@@ -253,6 +257,7 @@ export default function HomePage() {
               <h3 className="text-lg font-semibold">
                 ⭐ Recently Added
               </h3>
+
               <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                 Explore new vocabulary
               </p>
