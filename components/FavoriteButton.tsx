@@ -11,48 +11,54 @@ export default function FavoriteButton({ id }: Props) {
   const [isFavorite, setIsFavorite] = useState(false);
 
   useEffect(() => {
-    const saved = JSON.parse(
-      localStorage.getItem("favorites") || "[]"
-    ) as number[];
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem("favorites") || "[]"
+      ) as number[];
 
-    setIsFavorite(saved.includes(id));
+      setIsFavorite(saved.includes(id));
+    } catch {
+      setIsFavorite(false);
+    }
   }, [id]);
 
   function toggleFavorite() {
-    const saved = JSON.parse(
-      localStorage.getItem("favorites") || "[]"
-    ) as number[];
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem("favorites") || "[]"
+      ) as number[];
 
-    const updated = saved.includes(id)
-      ? saved.filter((item) => item !== id)
-      : [...saved, id];
+      const updated = saved.includes(id)
+        ? saved.filter((item) => item !== id)
+        : [...saved, id];
 
-    localStorage.setItem("favorites", JSON.stringify(updated));
-    setIsFavorite(updated.includes(id));
+      localStorage.setItem("favorites", JSON.stringify(updated));
+
+      setIsFavorite(updated.includes(id));
+
+      window.dispatchEvent(new Event("favorites-updated"));
+    } catch {
+      // ignore localStorage errors
+    }
   }
 
   return (
     <button
       type="button"
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleFavorite();
-      }}
+      onClick={toggleFavorite}
       aria-label={
-        isFavorite ? "Remove from favorites" : "Add to favorites"
+        isFavorite
+          ? "Remove from favorites"
+          : "Add to favorites"
       }
-      title={
-        isFavorite ? "Remove from favorites" : "Add to favorites"
-      }
-      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition hover:bg-slate-800"
+      className="rounded-xl p-2 transition hover:bg-slate-100 dark:hover:bg-slate-800"
     >
       <Heart
         size={22}
         className={
           isFavorite
-            ? "fill-rose-500 text-rose-500"
-            : "text-slate-400 hover:text-rose-400"
+            ? "fill-pink-500 text-pink-500"
+            : "text-slate-400 transition hover:text-pink-500"
         }
       />
     </button>

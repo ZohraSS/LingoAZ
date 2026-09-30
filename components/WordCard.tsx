@@ -10,88 +10,84 @@ interface Props {
 
 export default function WordCard({ word }: Props) {
   return (
-    <article className="group relative h-full overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/90 p-6 shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/70 hover:shadow-xl hover:shadow-blue-500/10">
-
+    <article className="group relative rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-500">
+      
+      {/* Top */}
       <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
-          <h2 className="break-words text-2xl font-bold tracking-tight text-white transition group-hover:text-blue-400">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white">
             {word.word}
           </h2>
 
-          <p className="mt-1 text-xs uppercase tracking-wider text-slate-500">
+          <p className="mt-1 text-sm uppercase tracking-wide text-slate-400">
             {word.type}
           </p>
         </div>
 
-        <div className="flex shrink-0 items-center gap-2">
-          <FavoriteButton id={word.id} />
+        <div className="flex items-center gap-2">
           <LevelBadge level={word.level} />
+          <FavoriteButton id={word.id} />
         </div>
       </div>
 
-      <div className="mt-5 space-y-1.5 text-sm">
-        <p className="text-slate-400">
-          <span className="mr-2 text-slate-500">GB</span>
+      {/* Pronunciation */}
+      <div className="mt-6 space-y-2 text-slate-500 dark:text-slate-400">
+        <p>
+          <span className="mr-2 font-medium">GB</span>
           {word.ipaUK || "—"}
         </p>
 
-        <p className="text-slate-400">
-          <span className="mr-2 text-slate-500">US</span>
+        <p>
+          <span className="mr-2 font-medium">US</span>
           {word.ipaUS || "—"}
         </p>
       </div>
 
-      <div className="mt-6 space-y-3">
-        <div>
-          <span className="mr-2 text-xs font-bold uppercase tracking-wider text-blue-400">
-            AZ
-          </span>
-
-          <span className="text-slate-100">
+      {/* Translations */}
+      <div className="mt-7 space-y-4">
+        <p>
+          <span className="mr-3 font-bold text-blue-500">AZ</span>
+          <span className="text-lg font-medium text-slate-900 dark:text-white">
             {word.az || "—"}
           </span>
-        </div>
+        </p>
 
-        <div>
-          <span className="mr-2 text-xs font-bold uppercase tracking-wider text-rose-400">
-            RU
-          </span>
-
-          <span className="text-slate-100">
+        <p>
+          <span className="mr-3 font-bold text-pink-500">RU</span>
+          <span className="text-lg font-medium text-slate-900 dark:text-white">
             {word.ru || "—"}
           </span>
-        </div>
+        </p>
       </div>
 
+      {/* Definition */}
       {word.definition && (
-        <p className="mt-5 line-clamp-2 text-sm leading-6 text-slate-400">
+        <p className="mt-7 border-t border-slate-200 pt-6 text-slate-600 dark:border-slate-700 dark:text-slate-300">
           {word.definition}
         </p>
       )}
 
-      {(word.example || word.examples?.[0]?.en) && (
-        <div className="mt-5 border-t border-slate-800 pt-4">
-          <p className="line-clamp-2 text-sm italic text-slate-500">
-            “{word.example || word.examples?.[0]?.en}”
-          </p>
-        </div>
+      {/* Example */}
+      {word.example && (
+        <p className="mt-5 border-t border-slate-200 pt-5 text-slate-500 italic dark:border-slate-700 dark:text-slate-400">
+          “{word.example}”
+        </p>
       )}
 
-      <Link
-        href={`/word/${word.id}`}
-        className="mt-6 flex items-center justify-between border-t border-slate-800 pt-4"
-      >
-        <span className="text-sm font-medium text-blue-400 transition group-hover:text-blue-300">
-          View details
-        </span>
+      {/* Details */}
+      <div className="mt-6 border-t border-slate-200 pt-5 dark:border-slate-700">
+        <Link
+          href={`/word/${word.id}`}
+          className="flex items-center justify-between font-medium text-blue-500 transition hover:text-blue-400"
+        >
+          <span>View details</span>
 
-        <ArrowRight
-          size={18}
-          className="text-slate-500 transition-all duration-300 group-hover:translate-x-1 group-hover:text-blue-400"
-        />
-      </Link>
-
-      <div className="pointer-events-none absolute -right-16 -top-16 h-32 w-32 rounded-full bg-blue-500/5 blur-3xl transition group-hover:bg-blue-500/10" />
+          <ArrowRight
+            size={20}
+            className="transition-transform group-hover:translate-x-1"
+          />
+        </Link>
+      </div>
     </article>
   );
 }
