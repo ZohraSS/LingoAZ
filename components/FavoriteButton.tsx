@@ -34,14 +34,18 @@ export default function FavoriteButton({ id }: Props) {
   return (
     <button
       type="button"
-      onClick={toggleFavorite}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleFavorite();
+      }}
       aria-label={
         isFavorite ? "Remove from favorites" : "Add to favorites"
       }
       title={
         isFavorite ? "Remove from favorites" : "Add to favorites"
       }
-      className="flex h-10 w-10 items-center justify-center rounded-xl transition hover:bg-slate-200 dark:hover:bg-slate-800"
+      className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl transition hover:bg-slate-800"
     >
       <Heart
         size={22}
