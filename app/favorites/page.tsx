@@ -2,84 +2,156 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Heart } from "lucide-react";
+import { Heart, ArrowRight } from "lucide-react";
 import { words } from "@/data";
 
 export default function FavoritesPage() {
   const [favoriteIds, setFavoriteIds] = useState<number[]>([]);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    const saved = JSON.parse(
-      localStorage.getItem("favorites") || "[]"
-    ) as number[];
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem("favorites") || "[]"
+      ) as number[];
 
-    setFavoriteIds(saved);
+      setFavoriteIds(saved);
+    } catch {
+      setFavoriteIds([]);
+    }
+
+    setLoaded(true);
   }, []);
 
   const favoriteWords = words.filter((word) =>
     favoriteIds.includes(word.id)
   );
 
-  return (
-    <main className="min-h-screen bg-slate-950 px-6 py-10 text-white">
-      <div className="mx-auto max-w-7xl">
-        <Link
-          href="/"
-          className="mb-8 inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300"
-        >
-          <ArrowLeft size={18} />
-          Home
-        </Link>
+  function removeFavorite(id: number) {
+    const updated = favoriteIds.filter((item) => item !== id);
 
-        <div className="mb-10 flex items-center gap-3">
-          <Heart className="fill-red-500 text-red-500" size={32} />
-          <div>
-            <h1 className="text-4xl font-bold">Favorites</h1>
-            <p className="mt-1 text-slate-400">
-              {favoriteWords.length} saved words
-            </p>
+    setFavoriteIds(updated);
+    localStorage.setItem("favorites", JSON.stringify(updated));
+  }
+
+  return (
+    <main className="min-h-screen bg-slate-50 px-6 py-12 text-slate-900 dark:bg-slate-950 dark:text-white">
+      <div className="mx-auto max-w-7xl">
+
+        <div className="mb-10">
+          <div className="flex items-center gap-3">
+            <Heart className="fill-rose-500 text-rose-500" size={32} />
+
+            <h1 className="text-4xl font-black">
+              Favorites
+            </h1>
           </div>
+
+          <p className="mt-3 text-slate-500 dark:text-slate-400">
+            Your saved vocabulary
+          </p>
         </div>
 
-        {favoriteWords.length === 0 ? (
-          <div className="rounded-3xl border border-slate-800 bg-slate-900 p-12 text-center">
+        {!loaded ? (
+          <div className="rounded-3xl border border-slate-200 bg-white p-10 text-center dark:border-slate-800 dark:bg-slate-900">
+            Loading favorites...
+          </div>
+        ) : favoriteWords.length === 0 ? (
+          <div className="rounded-3xl border border-dashed border-slate-300 bg-white p-12 text-center dark:border-slate-700 dark:bg-slate-900">
             <Heart
               size={48}
-              className="mx-auto mb-4 text-slate-600"
+              className="mx-auto mb-5 text-slate-400"
             />
-            <h2 className="text-2xl font-bold">No favorites yet</h2>
-            <p className="mt-2 text-slate-400">
-              Add words to favorites and they will appear here.
+
+            <h2 className="text-2xl font-bold">
+              No favorites yet
+            </h2>
+
+            <p className="mt-3 text-slate-500 dark:text-slate-400">
+              Open a word and click the heart icon to save it here.
             </p>
+
+            <Link
+              href="/search"
+              className="mt-7 inline-flex items-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 font-semibold text-white transition hover:bg-emerald-600"
+            >
+              Explore vocabulary
+              <ArrowRight size={18} />
+            </Link>
           </div>
         ) : (
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {favoriteWords.map((word) => (
-              <Link
-                key={word.id}
-                href={`/word/${word.id}`}
-                className="rounded-2xl border border-slate-800 bg-slate-900 p-6 transition hover:border-emerald-500 hover:shadow-lg hover:shadow-emerald-500/10"
-              >
-                <div className="flex items-center justify-between">
-                  <h2 className="text-2xl font-bold">
-                    {word.word}
-                  </h2>
+          <>
+            <div className="mb-6 text-sm text-slate-500 dark:text-slate-400">
+              {favoriteWords.length} saved word
+              {favoriteWords.length !== 1 ? "s" : ""}
+            </div>
 
-                  <span className="rounded-full bg-emerald-500 px-3 py-1 text-xs font-bold text-black">
-                    {word.level}
-                  </span>
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {favoriteWords.map((word) => (
+                <div
+                  key={word.id}
+                  className="group relative rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl dark:border-slate-800 dark:bg-slate-900"
+                >
+                  <button
+                    type="button"
+                    onClick={() => removeFavorite(word.id)}
+                    aria-label={`Remove ${word.word} from favorites`}
+                    className="absolute right-5 top-5 rounded-xl p-2 transition hover:bg-rose-50 dark:hover:bg-rose-950/30"
+                  >
+                    <Heart
+                      size={22}
+                      className="fill-rose-500 text-rose-500"
+                    />
+                  </button>
+
+                  <Link href={`/word/${word.id}`} className="block">
+                    <div className="pr-12">
+                      <h2 className="text-2xl font-black">
+                        {word.word}
+                      </h2>
+
+                      <span className="mt-2 inline-block rounded-full bg-emerald-500 px-3 py-1 text-xs font-bold text-white">
+                        {word.level}
+                      </span>
+                    </div>
+
+                    <p className="mt-5 text-slate-500 dark:text-slate-400">
+                      GB&nbsp;&nbsp;{word.ipaUK || "—"}
+                    </p>
+
+                    <p className="mt-1 text-slate-500 dark:text-slate-400">
+                      US&nbsp;&nbsp;{word.ipaUS || "—"}
+                    </p>
+
+                    <p className="mt-5">
+                      <span className="font-bold text-blue-500">
+                        AZ
+                      </span>{" "}
+                      {word.az || "—"}
+                    </p>
+
+                    <p className="mt-2">
+                      <span className="font-bold text-pink-500">
+                        RU
+                      </span>{" "}
+                      {word.ru || "—"}
+                    </p>
+
+                    <div className="mt-6 flex items-center justify-between border-t border-slate-200 pt-5 text-blue-500 dark:border-slate-800">
+                      <span className="font-semibold">
+                        View details
+                      </span>
+
+                      <ArrowRight
+                        size={20}
+                        className="transition group-hover:translate-x-1"
+                      />
+                    </div>
+                  </Link>
                 </div>
-
-                <p className="mt-4 text-slate-400">
-                  🇦🇿 {word.az || "—"}
-                </p>
-
-                <p className="mt-2 text-slate-400">
-                  🇷🇺 {word.ru || "—"}
-                </p>
-              </Link>
-            ))}
-          </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
     </main>
