@@ -18,26 +18,37 @@ export default function Navbar() {
 
         <nav className="flex items-center gap-2">
 
+          {/* Favorites */}
           <Link
             href="/favorites"
+            aria-label="Favorites"
+            title="Favorites"
             className="rounded-xl p-2 hover:bg-slate-100 dark:hover:bg-slate-800"
           >
             <Heart size={20} />
           </Link>
 
+          {/* Random Word */}
           <Link
             href="/random"
+            aria-label="Random word"
+            title="Random word"
             className="rounded-xl p-2 hover:bg-slate-100 dark:hover:bg-slate-800"
           >
             <Shuffle size={20} />
           </Link>
 
-          <button
+          {/* Search */}
+          <Link
+            href="/search"
+            aria-label="Search"
+            title="Search"
             className="rounded-xl p-2 hover:bg-slate-100 dark:hover:bg-slate-800"
           >
             <Search size={20} />
-          </button>
+          </Link>
 
+          {/* Theme */}
           <ThemeToggle />
 
         </nav>
