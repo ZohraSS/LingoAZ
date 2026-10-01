@@ -1,0 +1,42 @@
+name: Enrich FR DE translations
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "data/vocabulary8000.ts"
+      - "scripts/enrich-translations.mjs"
+      - ".github/workflows/enrich-translations.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  enrich:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Enrich French and German
+        run: node scripts/enrich-translations.mjs
+
+      - name: Commit enriched vocabulary
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/vocabulary8000.ts
+          if git diff --cached --quiet; then
+            echo "No translation changes."
+            exit 0
+          fi
+          git commit -m "Fill French and German translations"
+          git push
