@@ -20,36 +20,29 @@ export interface Example {
   en: string;
   az: string;
   ru: string;
+  fr?: string;
+  de?: string;
 }
 
 export interface Word {
   id: number;
-
   word: string;
-
   type: WordType;
-
   level: Level;
-
   category?: Category;
-
+  icon?: string;
   ipaUK: string;
   ipaUS: string;
-
   definition?: string;
-
   az: string;
   ru: string;
-
+  fr?: string;
+  de?: string;
   synonyms?: string[];
   antonyms?: string[];
-
   relatedWords?: string[];
-
   examples?: Example[];
-
   example?: string;
-
   isPopular?: boolean;
   createdAt?: string;
   audio?: string;
